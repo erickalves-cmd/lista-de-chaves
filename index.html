@@ -4,29 +4,118 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lista de Chaves</title>
+
 <style>
-  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; margin:0; background:#f7f7f8; color:#111}
-  .container{max-width:820px;margin:24px auto;padding:18px;background:#fff;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-  h1{margin:0 0 8px;font-size:20px}
-  p.lead{margin:0 0 16px;color:#444}
-  input.search{width:100%;padding:12px 14px;font-size:16px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
-  ul.list{list-style:none;padding:0;margin:14px 0 0}
-  li.item{padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:15px}
-  .nores{padding:20px;text-align:center;color:#666}
-  .footer{margin-top:14px;font-size:13px;color:#666}
-  @media (max-width:600px){
-    .container{margin:12px}
-    h1{font-size:18px}
+  :root {
+    --bg: #f2f3f5;
+    --card: #ffffff;
+    --text: #1f1f1f;
+    --muted: #6b6b6b;
+    --border: #e5e5e5;
+    --badge-bg: #e8eaed;
+    --badge-text: #3a3a3a;
+    --p2-bg: #dce7ff;
+    --p2-text: #1a4fb3;
+  }
+
+  body {
+    font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 32px auto;
+    padding: 24px;
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  h1 {
+    margin: 0 0 12px;
+    font-size: 26px;
+    font-weight: 600;
+  }
+
+  p.lead {
+    margin: 0 0 20px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  input.search {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin-bottom: 18px;
+  }
+
+  ul.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li.item {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    margin: 18px 0 8px;
+  }
+
+  .p2-tag {
+    background: var(--p2-bg);
+    color: var(--p2-text);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+
+  .nores {
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .footer {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--muted);
   }
 </style>
 </head>
+
 <body>
 <div class="container">
   <h1>Lista de Chaves</h1>
-  <p class="lead">Use a busca para filtrar por número ou pelo nome/descrição da chave. Pode digitar "25" ou "biblioteca".</p>
+  <p class="lead">Use a busca para filtrar por número ou pelo nome/descrição da chave.</p>
+
   <input id="search" class="search" placeholder="🔎 Buscar por número ou descrição..." autofocus>
+
   <ul id="results" class="list" aria-live="polite"></ul>
-  <div id="nores" class="nores" style="display:none">Nenhum resultado</div>
+  <div id="nores" class="nores" style="display:none">Nenhum resultado encontrado</div>
+
   <div class="footer">Arquivo: <strong>lista-de-chaves.html</strong></div>
 </div>
 
@@ -249,32 +338,30 @@ function render(list) {
     nores.style.display = 'none';
   }
 
+  let inPredioII = false;
+
   for (const it of list) {
     const li = document.createElement('li');
     li.className = 'item';
 
-    // Títulos [TEXTO]
+    // ✅ Títulos
     if (it.raw.startsWith('[') && it.raw.endsWith(']')) {
       const title = it.raw.slice(1, -1);
-      li.innerHTML = `
-        <h2 style="
-          margin:18px 0 8px;
-          font-size:18px;
-          color:#333;
-          display:flex;
-          align-items:center;
-          gap:8px;
-        ">
-          🔹 ${title}
-        </h2>
-      `;
+
+      inPredioII = (title === "CHAVES PRÉDIO II");
+
+      li.innerHTML = `<span class="badge">🔹 ${title}</span>`;
       ul.appendChild(li);
       continue;
     }
 
-    // Itens normais
-    const num = it.num ? `<strong>${it.num}</strong> — ` : '';
-    li.innerHTML = `${num}<span>${it.text || it.raw}</span>`;
+    // ✅ Itens normais
+    const num = it.num ? `<strong>${it.num}</strong>` : '';
+
+    // ✅ Badge P2
+    const p2 = inPredioII ? `<span class="p2-tag">🏢 P2</span>` : '';
+
+    li.innerHTML = `${p2}${num} — <span>${it.text || it.raw}</span>`;
     ul.appendChild(li);
   }
 }
