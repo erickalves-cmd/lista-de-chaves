@@ -12,7 +12,6 @@
   input.search{width:100%;padding:12px 14px;font-size:16px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
   ul.list{list-style:none;padding:0;margin:14px 0 0}
   li.item{padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:15px}
-  .meta{color:#666;font-size:13px}
   .nores{padding:20px;text-align:center;color:#666}
   .footer{margin-top:14px;font-size:13px;color:#666}
   @media (max-width:600px){
@@ -32,7 +31,7 @@
 </div>
 
 <script>
-// ✅ ENTRIES — sem duplicação
+// ✅ LISTA DE ENTRADAS
 const entries = [
   "[LABORATÓRIOS]",
   "46 Laboratório Dietética / Técnica de Alimentos",
@@ -229,23 +228,25 @@ const entries = [
   "95 Quadro Geral de Força"
 ];
 
-// ✅ Parse
+// ✅ Transformar em objetos estruturados
 const structured = entries.map(e => {
   const m = e.match(/^(\d{1,3})\s*[–—-]?\s*(.*)$/);
   if (m) return { num: m[1], text: m[2] || '', raw: e };
   return { num: '', text: e, raw: e };
 });
 
-// ✅ Render com ícone
+// ✅ Função de renderização
 function render(list) {
   const ul = document.getElementById('results');
   ul.innerHTML = '';
 
+  const nores = document.getElementById('nores');
+
   if (list.length === 0) {
-    document.getElementById('nores').style.display = 'block';
+    nores.style.display = 'block';
     return;
   } else {
-    document.getElementById('nores').style.display = 'none';
+    nores.style.display = 'none';
   }
 
   for (const it of list) {
@@ -285,7 +286,10 @@ render(structured);
 const input = document.getElementById('search');
 input.addEventListener('input', () => {
   const q = input.value.trim().toLowerCase();
-  if (!q) return render(structured);
+  if (!q) {
+    render(structured);
+    return;
+  }
 
   const filtered = structured.filter(it =>
     (it.num && it.num.includes(q)) ||
@@ -298,4 +302,3 @@ input.addEventListener('input', () => {
 </script>
 </body>
 </html>
-
