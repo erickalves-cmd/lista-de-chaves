@@ -249,29 +249,47 @@ function render(list) {
 }
 
 // Initial render (all)
-render(structured);
+function render(list) {
+  const ul = document.getElementById('results');
+  ul.innerHTML = '';
 
-// Live search
-const input = document.getElementById('search');
-input.addEventListener('input', ()=>{
-  const q = input.value.trim().toLowerCase();
-  if(!q) {
-    render(structured);
+  if (list.length === 0) {
+    document.getElementById('nores').style.display = 'block';
     return;
+  } else {
+    document.getElementById('nores').style.display = 'none';
   }
-  const filtered = structured.filter(it => {
-    return (it.num && it.num.includes(q)) || (it.text && it.text.toLowerCase().includes(q)) || it.raw.toLowerCase().includes(q);
-  });
-  render(filtered);
-});
 
-// Allow pressing enter to focus first result (accessibility)
-input.addEventListener('keydown', (e)=> {
-  if(e.key === 'Enter') {
-    const first = document.querySelector('.list .item');
-    if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
+  for (const it of list) {
+    const li = document.createElement('li');
+    li.className = 'item';
+
+    // Detecta títulos "## ..."
+    if (it.raw.startsWith("## ")) {
+      const title = it.raw.replace("## ", "");
+      li.innerHTML = `
+        <h2 style="
+          margin:18px 0 8px;
+          font-size:18px;
+          color:#333;
+          display:flex;
+          align-items:center;
+          gap:8px;
+        ">
+          🔹 ${title}
+        </h2>`;
+      ul.appendChild(li);
+      continue;
+    }
+
+    // Render normal das chaves
+    const num = it.num ? `<strong>${it.num}</strong> — ` : '';
+    li.innerHTML = `${num}<span>${it.text || it.raw}</span>`;
+    ul.appendChild(li);
   }
-});
+}
+
+
 </script>
 </body>
 </html>
