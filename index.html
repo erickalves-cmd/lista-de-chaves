@@ -17,7 +17,6 @@
     --p2-bg: #dce7ff;
     --p2-text: #1a4fb3;
 
-    /* Dark mode */
     --bg-dark: #1c1e22;
     --card-dark: #2a2d33;
     --text-dark: #f1f1f1;
@@ -78,7 +77,7 @@
     font-size: 16px;
     border: 1px solid var(--border);
     border-radius: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     background: var(--card);
     color: var(--text);
     transition: all 0.3s ease;
@@ -90,7 +89,6 @@
     color: var(--text-dark);
   }
 
-  /* Filtros */
   .filters {
     display: flex;
     flex-wrap: wrap;
@@ -125,7 +123,7 @@
   }
 
   body.dark .filter-btn:hover {
-    background: rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.05);
   }
 
   body.dark .filter-btn.active {
@@ -141,7 +139,7 @@
   }
 
   li.item {
-    padding: 14px 16px;
+    padding: 10px 16px;
     border-bottom: 1px solid var(--border);
     font-size: 15px;
     display: flex;
@@ -167,7 +165,7 @@
     border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
-    margin: 18px 0 8px;
+    margin: 16px 0 6px;
   }
 
   body.dark .badge {
@@ -210,7 +208,6 @@
     color: var(--muted-dark);
   }
 
-  /* Botão flutuante modo escuro - glassmorphism */
   .theme-toggle {
     position: fixed;
     bottom: 24px;
@@ -219,8 +216,8 @@
     height: 52px;
     border-radius: 50%;
     backdrop-filter: blur(10px);
-    background: rgba(255,255,255,0.35);
-    border: 1px solid rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -233,7 +230,7 @@
 
   body.dark .theme-toggle {
     background: rgba(0,0,0,0.35);
-    border-color: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.2);
   }
 
   .theme-toggle:hover {
@@ -241,7 +238,6 @@
     box-shadow: 0 6px 22px rgba(0,0,0,0.22);
   }
 
-  /* Botão voltar ao topo */
   .back-top {
     position: fixed;
     bottom: 90px;
@@ -266,7 +262,6 @@
   .back-top.visible {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0);
   }
 
   .back-top:hover {
@@ -286,12 +281,10 @@
 </head>
 
 <body>
-
 <div class="container">
   <h1>Lista de Chaves</h1>
   <p class="lead">Use a busca para filtrar por número, descrição ou categoria.</p>
 
-  <!-- Filtros -->
   <div class="filters" id="filters"></div>
 
   <input id="search" class="search" placeholder="🔎 Buscar por número, nome ou vários termos..." autofocus>
@@ -302,16 +295,11 @@
   <div class="footer">Arquivo: <strong>lista-de-chaves.html</strong></div>
 </div>
 
-<!-- Botão modo escuro -->
 <div class="theme-toggle" id="themeToggle">🌙</div>
-
-<!-- Botão voltar ao topo -->
 <div class="back-top" id="backTop">↑</div>
 
 <script>
-// ============================
-// LISTA DE ENTRADAS
-// ============================
+// ===== LISTA DE ENTRADAS =====
 const entries = [
   "[LABORATÓRIOS]",
   "46 Laboratório Dietética / Técnica de Alimentos",
@@ -508,18 +496,14 @@ const entries = [
   "95 Quadro Geral de Força"
 ];
 
-// ============================
-// PARSE
-// ============================
+// ===== PARSE =====
 const structured = entries.map(e => {
   const m = e.match(/^(\d{1,3})\s*[–—-]?\s*(.*)$/);
   if (m) return { num: m[1], text: m[2] || '', raw: e };
   return { num: '', text: e, raw: e };
 });
 
-// ============================
-// CATEGORIAS
-// ============================
+// ===== CATEGORIAS =====
 const categories = [
   "Todos",
   "LABORATÓRIOS",
@@ -533,61 +517,56 @@ const categories = [
   "CHAVES PRÉDIO II"
 ];
 
-// ============================
-// RENDERIZAÇÃO
-// ============================
+// ===== RENDER =====
 function render(list, activeCategory = "Todos") {
   const ul = document.getElementById('results');
-  ul.innerHTML = '';
-
   const nores = document.getElementById('nores');
+  ul.innerHTML = '';
+  nores.style.display = 'none';
 
-  if (list.length === 0) {
-    nores.style.display = 'block';
-    return;
-  } else {
-    nores.style.display = 'none';
-  }
-
-  let inSection = "";
+  let currentSection = '';
   let inPredioII = false;
+  let renderedSomething = false;
 
   for (const it of list) {
+    // É título?
+    if (it.raw.startsWith('[') && it.raw.endsWith(']')) {
+      currentSection = it.raw.slice(1, -1);
+      inPredioII = (currentSection === 'CHAVES PRÉDIO II');
+
+      // Se filtro não for Todos e esta seção for de outra categoria, ainda mostramos o título
+      if (activeCategory === "Todos" || currentSection === activeCategory) {
+        const li = document.createElement('li');
+        li.className = 'item';
+        li.innerHTML = `<span class="badge">🔹 ${currentSection}</span>`;
+        ul.appendChild(li);
+        renderedSomething = true;
+      }
+      continue;
+    }
+
+    // Se filtro é por categoria e a seção atual não é a escolhida, pula
+    if (activeCategory !== "Todos" && currentSection !== activeCategory) {
+      continue;
+    }
+
     const li = document.createElement('li');
     li.className = 'item';
-
-    // Título de seção
-    if (it.raw.startsWith('[') && it.raw.endsWith(']')) {
-      const title = it.raw.slice(1, -1);
-      inSection = title;
-      inPredioII = (title === "CHAVES PRÉDIO II");
-
-      li.innerHTML = `<span class="badge">🔹 ${title}</span>`;
-      ul.appendChild(li);
-      continue;
-    }
-
-    // Filtro por categoria (se não for "Todos")
-    if (activeCategory !== "Todos" && inSection !== activeCategory) {
-      continue;
-    }
 
     const num = it.num ? `<strong>${it.num}</strong>` : '';
     const p2 = inPredioII ? `<span class="p2-tag">🏢 P2</span>` : '';
 
     li.innerHTML = `${p2}${num} — <span>${it.text || it.raw}</span>`;
     ul.appendChild(li);
+    renderedSomething = true;
   }
 
-  // Se depois do filtro não sobrou nada visível
-  if (!ul.hasChildNodes()) {
+  if (!renderedSomething) {
     nores.style.display = 'block';
   }
 }
 
-// ============================
-// FILTROS (BOTÕES OUTLINE)
-// ============================
+// ===== FILTROS =====
 function setupFilters() {
   const filtersDiv = document.getElementById('filters');
   filtersDiv.innerHTML = '';
@@ -595,40 +574,31 @@ function setupFilters() {
   categories.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = 'filter-btn';
-    if (cat === "Todos") btn.classList.add('active');
     btn.textContent = cat;
     btn.dataset.category = cat;
+    if (cat === "Todos") btn.classList.add('active');
     filtersDiv.appendChild(btn);
   });
 
   filtersDiv.addEventListener('click', (e) => {
     if (!e.target.classList.contains('filter-btn')) return;
-
-    const cat = e.target.dataset.category;
-
-    // Marca ativo
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     e.target.classList.add('active');
-
     applySearchAndFilter();
   });
 }
 
-// ============================
-// BUSCA AVANÇADA
-// ============================
+// ===== BUSCA AVANÇADA =====
 function applySearchAndFilter() {
   const input = document.getElementById('search');
   const q = input.value.trim().toLowerCase();
   const activeBtn = document.querySelector('.filter-btn.active');
   const activeCategory = activeBtn ? activeBtn.dataset.category : "Todos";
 
-  // múltiplos termos separados por espaço
   const terms = q ? q.split(/\s+/).filter(Boolean) : [];
 
   let list = structured;
 
-  // filtro por texto/número
   if (terms.length > 0) {
     list = structured.filter(it => {
       const haystack = (it.raw + ' ' + (it.text || '') + ' ' + (it.num || '')).toLowerCase();
@@ -639,9 +609,7 @@ function applySearchAndFilter() {
   render(list, activeCategory);
 }
 
-// ============================
-// MODO ESCURO (BOTÃO FLUTUANTE)
-// ============================
+// ===== TEMA ESCURO =====
 const themeToggle = document.getElementById('themeToggle');
 
 function loadTheme() {
@@ -661,9 +629,7 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 
-// ============================
-// BOTÃO VOLTAR AO TOPO
-// ============================
+// ===== VOLTAR AO TOPO =====
 const backTop = document.getElementById('backTop');
 
 window.addEventListener('scroll', () => {
@@ -678,15 +644,13 @@ backTop.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// ============================
-// INICIALIZAÇÃO
-// ============================
+// ===== INICIALIZAÇÃO =====
 setupFilters();
 render(structured);
 loadTheme();
 
-const input = document.getElementById('search');
-input.addEventListener('input', applySearchAndFilter);
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', applySearchAndFilter);
 </script>
 </body>
 </html>
