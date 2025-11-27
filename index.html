@@ -4,472 +4,301 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lista de Chaves</title>
-
 <style>
-  :root {
-    --bg: #f2f3f5;
-    --card: #ffffff;
-    --text: #1f1f1f;
-    --muted: #6b6b6b;
-    --border: #e5e5e5;
-    --badge-bg: #e8eaed;
-    --badge-text: #3a3a3a;
-    --p2-bg: #dce7ff;
-    --p2-text: #1a4fb3;
-
-    --bg-dark: #1c1e22;
-    --card-dark: #2a2d33;
-    --text-dark: #f1f1f1;
-    --muted-dark: #9a9a9a;
-    --border-dark: #3a3d44;
-    --badge-bg-dark: #3a3d44;
-    --badge-text-dark: #e5e5e5;
-    --p2-bg-dark: #2f3f63;
-    --p2-text-dark: #c9d9ff;
-  }
-
-  body {
-    font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    transition: background 0.3s ease, color 0.3s ease;
-  }
-
-  body.dark {
-    background: var(--bg-dark);
-    color: var(--text-dark);
-  }
-
-  .container {
-    max-width: 860px;
-    margin: 32px auto;
-    padding: 24px;
-    background: var(--card);
-    border-radius: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    transition: background 0.3s ease;
-  }
-
-  body.dark .container {
-    background: var(--card-dark);
-  }
-
-  h1 {
-    margin: 0 0 12px;
-    font-size: 26px;
-    font-weight: 600;
-  }
-
-  p.lead {
-    margin: 0 0 20px;
-    color: var(--muted);
-    font-size: 15px;
-  }
-
-  body.dark p.lead {
-    color: var(--muted-dark);
-  }
-
-  input.search {
-    width: 100%;
-    padding: 14px 16px;
-    font-size: 16px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-bottom: 14px;
-    background: var(--card);
-    color: var(--text);
-    transition: all 0.3s ease;
-  }
-
-  body.dark input.search {
-    background: var(--card-dark);
-    border-color: var(--border-dark);
-    color: var(--text-dark);
-  }
-
-  ul.list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  li.item {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    animation: fadeIn 0.25s forwards;
-  }
-
-  body.dark li.item {
-    border-color: var(--border-dark);
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-
-  .badge {
-    display: inline-block;
-    background: var(--badge-bg);
-    color: var(--badge-text);
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    margin: 16px 0 6px;
-  }
-
-  body.dark .badge {
-    background: var(--badge-bg-dark);
-    color: var(--badge-text-dark);
-  }
-
-  .p2-tag {
-    background: var(--p2-bg);
-    color: var(--p2-text);
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-right: 6px;
-  }
-
-  body.dark .p2-tag {
-    background: var(--p2-bg-dark);
-    color: var(--p2-text-dark);
-  }
-
-  .nores {
-    padding: 20px;
-    text-align: center;
-    color: var(--muted);
-  }
-
-  body.dark .nores {
-    color: var(--muted-dark);
-  }
-
-  .footer {
-    margin-top: 20px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  body.dark .footer {
-    color: var(--muted-dark);
-  }
-
-  /* Botão modo escuro glass */
-  .theme-toggle {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    backdrop-filter: blur(10px);
-    background: rgba(255,255,255,0.4);
-    border: 1px solid rgba(255,255,255,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    cursor: pointer;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
-    z-index: 20;
-  }
-
-  body.dark .theme-toggle {
-    background: rgba(0,0,0,0.35);
-    border-color: rgba(255,255,255,0.2);
-  }
-
-  .theme-toggle:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 22px rgba(0,0,0,0.22);
-  }
-
-  /* Botão voltar ao topo */
-  .back-top {
-    position: fixed;
-    bottom: 90px;
-    right: 24px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #4a6cff;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    cursor: pointer;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.2);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 19;
-  }
-
-  .back-top.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .back-top:hover {
-    transform: translateY(-2px);
+  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; margin:0; background:#f7f7f8; color:#111}
+  .container{max-width:820px;margin:24px auto;padding:18px;background:#fff;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+  h1{margin:0 0 8px;font-size:20px}
+  p.lead{margin:0 0 16px;color:#444}
+  input.search{width:100%;padding:12px 14px;font-size:16px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
+  ul.list{list-style:none;padding:0;margin:14px 0 0}
+  li.item{padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:15px}
+  .nores{padding:20px;text-align:center;color:#666}
+  .footer{margin-top:14px;font-size:13px;color:#666}
+  @media (max-width:600px){
+    .container{margin:12px}
+    h1{font-size:18px}
   }
 </style>
 </head>
-
 <body>
-
 <div class="container">
   <h1>Lista de Chaves</h1>
-  <p class="lead">Use a busca para filtrar por número, descrição ou categoria.</p>
-
-  <input id="search" class="search" placeholder="🔎 Buscar por número, nome ou vários termos..." autofocus>
-
+  <p class="lead">Use a busca para filtrar por número ou pelo nome/descrição da chave. Pode digitar "25" ou "biblioteca".</p>
+  <input id="search" class="search" placeholder="🔎 Buscar por número ou descrição..." autofocus>
   <ul id="results" class="list" aria-live="polite"></ul>
-  <div id="nores" class="nores" style="display:none">Nenhum resultado encontrado</div>
-
+  <div id="nores" class="nores" style="display:none">Nenhum resultado</div>
   <div class="footer">Arquivo: <strong>lista-de-chaves.html</strong></div>
 </div>
 
-<div class="theme-toggle" id="themeToggle">🌙</div>
-<div class="back-top" id="backTop">↑</div>
-
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+// ✅ LISTA DE ENTRADAS
+const entries = [
+  "[LABORATÓRIOS]",
+  "46 Laboratório Dietética / Técnica de Alimentos",
+  "47 Laboratório Fisiologia e Avaliação Nutricional",
+  "48 —",
+  "49 —",
+  "50 Laboratório de Biologia Celular e Embriologia",
+  "51 Complexo de Anatomia",
+  "52 Laboratório de Medicina Veterinária",
+  "53 Sala Técnica Anatomia",
+  "54 Laboratório Informática I",
+  "55 Laboratório Informática II",
+  "56 Laboratório Informática III",
+  "57 Laboratório Informática IV",
+  "58 Laboratório de Física",
+  "59 Laboratório de Química",
+  "60 Chave trave reconhecimento facial - portão que acessa o estacionamento",
+  "61 Brinquedoteca",
+  "62 Laboratório Biotério",
+  "63 Laboratório de Histologia",
+  "64 Laboratório de Mecânica e Fluidos Hidráulico",
+  "65 Laboratório de Microbiologia e Parasitologia",
+  "66 Laboratório de Farmacotécnica e Farmacognosia e Botânica",
+  "67 —",
 
-  const entries = [
-    "[LABORATÓRIOS]",
-    "46 Laboratório Dietética / Técnica de Alimentos",
-    "47 Laboratório Fisiologia e Avaliação Nutricional",
-    "48 —",
-    "49 —",
-    "50 Laboratório de Biologia Celular e Embriologia",
-    "51 Complexo de Anatomia",
-    "52 Laboratório de Medicina Veterinária",
-    "53 Sala Técnica Anatomia",
-    "54 Laboratório Informática I",
-    "55 Laboratório Informática II",
-    "56 Laboratório Informática III",
-    "57 Laboratório Informática IV",
-    "58 Laboratório de Física",
-    "59 Laboratório de Química",
-    "60 Chave trave reconhecimento facial - portão que acessa o estacionamento",
-    "61 Brinquedoteca",
-    "62 Laboratório Biotério",
-    "63 Laboratório de Histologia",
-    "64 Laboratório de Mecânica e Fluidos Hidráulico",
-    "65 Laboratório de Microbiologia e Parasitologia",
-    "66 Laboratório de Farmacotécnica e Farmacognosia e Botânica",
-    "67 —",
+  "[DEPARTAMENTOS DIVERSOS]",
+  "68 Sala da Iandra NAAE",
+  "69 Capela e Coral da Capela",
+  "70 Audiovisuais",
+  "71 Anfiteatro",
+  "72 NAV | NDE | CEPEC",
+  "73 —",
+  "74 Sala dos Professores",
+  "75 Comercial (Admissões)",
+  "76 Sala dos Professores",
+  "77 RECAR",
+  "78 CIU – Central de Idiomas",
+  "79 Secretaria",
+  "80 Sala Simônica",
+  "81 Atlética da Medicina (Antigo Comunicação e Marketing)",
+  "82 Sala Tutores Online EAD",
+  "83 Biblioteca",
+  "84 Reitoria",
+  "85 Marketing (Antigo Cepec)",
+  "86 Secretaria da Direção de Medicina",
+  "87 Elevador",
+  "88 Refeitório / Cantina",
+  "89 Financeiro",
+  "90 Assistência Administrativa",
+  "91 Compras",
+  "92 Telefonista",
+  "93 Financeiro (porta de vidro ao lado do elevador)",
+  "94 DTI",
+  "95 Metodologia Ativa I - Audiovisuais possui cópia",
+  "96 Metodologia Ativa II - Audiovisuais possui cópia",
+  "97 CPA/CEAU",
+  "98 TCC",
+  "99 NDE Cursos Noturnos",
+  "100 —",
+  "101 Cômodo dos livros",
+  "102 Cômodo dos motoristas",
+  "103 Polo da Polícia Militar",
+  "104 Cômodo dos Jardineiros",
+  "105 Portão em frente ao laboratório de mecânica",
+  "106 Entrada principal - Frente",
+  "107 Portão Lateral que vai para o Ginásio (em frente à Biblioteca)",
+  "108 Portão Principal Recepção I - Calçada",
+  "109 Portão estacionamento Ginásio",
+  "110 Portão pequeno estacionamento HDL",
+  "111 Portão Jardim Vertical",
+  "112 Portão acesso ao corredor entre salas 14 e 15",
+  "113 Portão eletrônico do IML",
+  "114 Portão de vidro catracas recepção I",
+  "115 Portão Anatomia (chave do motor)",
+  "116 Porta de vidro saída de emergência da Biblioteca",
+  "117 Porteira / Portão fazenda / UPL Fazenda",
+  "118 Gerador antigo",
+  "119 Porta de vidro no 1º andar que dá acesso ao arquivo morto",
+  "120 Porta HDL acesso à rampa Medicina Veterinária",
+  "121 Antigo RH",
+  "122 Portão manchester",
+  "123 Galão de produtos",
+  "124 Portão da entrada de motos",
+  "125 Galões de produtos - limpeza - diluidora",
+  "126 —",
+  "127 Sala de estudos",
 
-    "[DEPARTAMENTOS DIVERSOS]",
-    "68 Sala da Iandra NAAE",
-    "69 Capela e Coral da Capela",
-    "70 Audiovisuais",
-    "71 Anfiteatro",
-    "72 NAV | NDE | CEPEC",
-    "73 —",
-    "74 Sala dos Professores",
-    "75 Comercial (Admissões)",
-    "76 Sala dos Professores",
-    "77 RECAR",
-    "78 CIU – Central de Idiomas",
-    "79 Secretaria",
-    "80 Sala Simônica",
-    "81 Atlética da Medicina (Antigo Comunicação e Marketing)",
-    "82 Sala Tutores Online EAD",
-    "83 Biblioteca",
-    "84 Reitoria",
-    "85 Marketing (Antigo Cepec)",
-    "86 Secretaria da Direção de Medicina",
-    "87 Elevador",
-    "88 Refeitório / Cantina",
-    "89 Financeiro",
-    "90 Assistência Administrativa",
-    "91 Compras",
-    "92 Telefonista",
-    "93 Financeiro (porta de vidro ao lado do elevador)",
-    "94 DTI",
-    "95 Metodologia Ativa I - Audiovisuais possui cópia",
-    "96 Metodologia Ativa II - Audiovisuais possui cópia",
-    "97 CPA/CEAU",
-    "98 TCC",
-    "99 NDE Cursos Noturnos",
-    "100 —",
-    "101 Cômodo dos livros",
-    "102 Cômodo dos motoristas",
-    "103 Polo da Polícia Militar",
-    "104 Cômodo dos Jardineiros",
-    "105 Portão em frente ao laboratório de mecânica",
-    "106 Entrada principal - Frente",
-    "107 Portão Lateral que vai para o Ginásio (em frente à Biblioteca)",
-    "108 Portão Principal Recepção I - Calçada",
-    "109 Portão estacionamento Ginásio",
-    "110 Portão pequeno estacionamento HDL",
-    "111 Portão Jardim Vertical",
-    "112 Portão acesso ao corredor entre salas 14 e 15",
-    "113 Portão eletrônico do IML",
-    "114 Portão de vidro catracas recepção I",
-    "115 Portão Anatomia (chave do motor)",
-    "116 Porta de vidro saída de emergência da Biblioteca",
-    "117 Porteira / Portão fazenda / UPL Fazenda",
-    "118 Gerador antigo",
-    "119 Porta de vidro no 1º andar que dá acesso ao arquivo morto",
-    "120 Porta HDL acesso à rampa Medicina Veterinária",
-    "121 Antigo RH",
-    "122 Portão manchester",
-    "123 Galão de produtos",
-    "124 Portão da entrada de motos",
-    "125 Galões de produtos - limpeza - diluidora",
-    "126 —",
-    "127 Sala de estudos",
+  "[COORDENAÇÕES]",
+  "128 Recepção dos Gabinetes Coordenação de cursos (Jane)",
+  "129 —",
+  "130 Coordenação de Cursos - Sala de reunião",
+  "131 Coordenação do curso de Medicina",
+  "132 Coordenação de Enfermagem (Karla)",
+  "133 —",
+  "134 Coordenação de Farmácia",
+  "135 Coordenação de Fisioterapia (Fernanda)",
+  "137 —",
+  "138 Coordenação de Educação Física",
+  "139 —",
+  "140 Coordenação de Medicina Veterinária (Sílvio)",
+  "141 Coordenação de Psicologia (Celso)",
+  "142 —",
 
-    "[COORDENAÇÕES]",
-    "128 Recepção dos Gabinetes Coordenação de cursos (Jane)",
-    "129 —",
-    "130 Coordenação de Cursos - Sala de reunião",
-    "131 Coordenação do curso de Medicina",
-    "132 Coordenação de Enfermagem (Karla)",
-    "133 —",
-    "134 Coordenação de Farmácia",
-    "135 Coordenação de Fisioterapia (Fernanda)",
-    "137 —",
-    "138 Coordenação de Educação Física",
-    "139 —",
-    "140 Coordenação de Medicina Veterinária (Sílvio)",
-    "141 Coordenação de Psicologia (Celso)",
-    "142 —",
+  "[SANITÁRIOS]",
+  "144 Sanitários masc./fem. (Prédio I, próximo ao Audiovisual)",
+  "145 Sanitários (Sala dos Professores)",
+  "146 Sanitários Ginásio (Feminino e Masculino)",
+  "147 Sanitários CEU",
 
-    "[SANITÁRIOS]",
-    "144 Sanitários masc./fem. (Prédio I, próximo ao Audiovisual)",
-    "145 Sanitários (Sala dos Professores)",
-    "146 Sanitários Ginásio (Feminino e Masculino)",
-    "147 Sanitários CEU",
+  "[SAÍDAS DE EMERGÊNCIA E CÔMODOS DA LIMPEZA]",
+  "148 Saída de emergência próxima ao Laboratório de Anatomia",
+  "149 Saída de emergência CEU e Campo de Futebol",
+  "150 Cômodo Limpeza (15 a 22)",
+  "151 Saída de emergência ao lado do Biotério",
+  "152 Cômodo Limpeza (01 a 07)",
+  "153 Cômodo Limpeza (08 a 14)",
 
-    "[SAÍDAS DE EMERGÊNCIA E CÔMODOS DA LIMPEZA]",
-    "148 Saída de emergência próxima ao Laboratório de Anatomia",
-    "149 Saída de emergência CEU e Campo de Futebol",
-    "150 Cômodo Limpeza (15 a 22)",
-    "151 Saída de emergência ao lado do Biotério",
-    "152 Cômodo Limpeza (01 a 07)",
-    "153 Cômodo Limpeza (08 a 14)",
+  "[BARRACÃO E GINÁSIO]",
+  "154 Ginásio",
+  "155 Quadros de energia",
+  "156 Depósito bolas no Ginásio",
+  "157 Sala Funcionários Manutenção",
+  "158 Barracão da Manutenção",
+  "159 Caixa d’água do campo",
+  "160 Sala Técnico de Segurança",
+  "161 Chave do Edifício Dona Otília",
+  "162 Campo de Futebol",
 
-    "[BARRACÃO E GINÁSIO]",
-    "154 Ginásio",
-    "155 Quadros de energia",
-    "156 Depósito bolas no Ginásio",
-    "157 Sala Funcionários Manutenção",
-    "158 Barracão da Manutenção",
-    "159 Caixa d’água do campo",
-    "160 Sala Técnico de Segurança",
-    "161 Chave do Edifício Dona Otília",
-    "162 Campo de Futebol",
+  "[CENTROS EDUCACIONAIS]",
+  "163 Centro de Educação Infantil do Bairro São Sebastião",
+  "164 Centro de Educação Infantil do Bairro Novo Horizonte",
 
-    "[CENTROS EDUCACIONAIS]",
-    "163 Centro de Educação Infantil do Bairro São Sebastião",
-    "164 Centro de Educação Infantil do Bairro Novo Horizonte",
+  "[DIVERSOS]",
+  "165 DML",
+  "166 Subestação de energia I e II",
+  "167 Terreno ao lado da Fuerza",
+  "168 Moove",
+  "169 Depósito de Pintura",
+  "170 Central de Gás do IML",
+  "171 Gerador de Energia",
+  "172 Bomba da Veterinária",
+  "173 Projeto, Depósito e estacionamento ALFA",
 
-    "[DIVERSOS]",
-    "165 DML",
-    "166 Subestação de energia I e II",
-    "167 Terreno ao lado da Fuerza",
-    "168 Moove",
-    "169 Depósito de Pintura",
-    "170 Central de Gás do IML",
-    "171 Gerador de Energia",
-    "172 Bomba da Veterinária",
-    "173 Projeto, Depósito e estacionamento ALFA",
+  "[CHAVES PRÉDIO II]",
+  "1 Sala de aula nº 01",
+  "2 Sala de aula nº 02",
+  "3 Sala de aula nº 03",
+  "4 Arquivo Morto Secretaria",
+  "5 Sala de aula nº 05",
+  "6 Sala de aula nº 06",
+  "7 Sala de aula nº 07",
+  "8 Sala de aula nº 08",
+  "9 Sala de aula nº 09",
+  "10 Sala de aula nº 10",
+  "11 Sala de aula nº 11",
+  "12 Sala de aula nº 12",
+  "13 Sala de aula nº 13",
+  "14 Sala de aula nº 14",
+  "15 Sala de aula nº 15",
+  "16 Sala de aula nº 16",
+  "17 Sala de aula nº 17",
+  "18 Sala de aula nº 18",
+  "19 Sala de aula nº 19",
+  "20 Sala de aula nº 20",
+  "21 Sala de aula nº 21",
+  "22 Sala de Arquivos",
+  "23 Brinquedoteca",
+  "25 Sala desenvolver DTI",
+  "26 Sala de desenho",
+  "28 DA Medicina",
+  "29 Comodo eletricista",
+  "30 Portão Rampa Recepção",
+  "31 Sala do Empreendedorismo",
+  "32 Portão Padre Anchieta - II",
+  "34 Recepção Prédio II",
+  "38 Depósito 2º Piso e Arquivo Secretaria",
+  "41 Cadeado Porta Entrada do Elevador",
+  "45 Sanitário térreo - ao lado da escada",
+  "46 Estúdio fotográfico Bloco G",
+  "54 NAAP",
+  "61 Núcleo de Práticas (porta lateral)",
+  "62 Coordenação do Nacional",
+  "68 Elevador Prédio II",
+  "71 Portão Grande Recepção II",
+  "72 Portão de entrada do estacionamento de Motos",
+  "74 Portão esquina Prédio II",
+  "76 Antigo Almoxarifado",
+  "79 Depósito de material para pintura",
+  "83 Coordenação ADM e Contábeis",
+  "84 Deposito DTI",
+  "85 Coordenação de Direito",
+  "88 CPG",
+  "92 Cômodo da Limpeza - Prédio II",
+  "95 Quadro Geral de Força"
+];
 
-    "[CHAVES PRÉDIO II]",
-    "1 Sala de aula nº 01",
-    "2 Sala de aula nº 02",
-    "3 Sala de aula nº 03",
-    "4 Arquivo Morto Secretaria",
-    "5 Sala de aula nº 05",
-    "6 Sala de aula nº 06",
-    "7 Sala de aula nº 07",
-    "8 Sala de aula nº 08",
-    "9 Sala de aula nº 09",
-    "10 Sala de aula nº 10",
-    "11 Sala de aula nº 11",
-    "12 Sala de aula nº 12",
-    "13 Sala de aula nº 13",
-    "14 Sala de aula nº 14",
-    "15 Sala de aula nº 15",
-    "16 Sala de aula nº 16",
-    "17 Sala de aula nº 17",
-    "18 Sala de aula nº 18",
-    "19 Sala de aula nº 19",
-    "20 Sala de aula nº 20",
-    "21 Sala de aula nº 21",
-    "22 Sala de Arquivos",
-    "23 Brinquedoteca",
-    "25 Sala desenvolver DTI",
-    "26 Sala de desenho",
-    "28 DA Medicina",
-    "29 Comodo eletricista",
-    "30 Portão Rampa Recepção",
-    "31 Sala do Empreendedorismo",
-    "32 Portão Padre Anchieta - II",
-    "34 Recepção Prédio II",
-    "38 Depósito 2º Piso e Arquivo Secretaria",
-    "41 Cadeado Porta Entrada do Elevador",
-    "45 Sanitário térreo - ao lado da escada",
-    "46 Estúdio fotográfico Bloco G",
-    "54 NAAP",
-    "61 Núcleo de Práticas (porta lateral)",
-    "62 Coordenação do Nacional",
-    "68 Elevador Prédio II",
-    "71 Portão Grande Recepção II",
-    "72 Portão de entrada do estacionamento de Motos",
-    "74 Portão esquina Prédio II",
-    "76 Antigo Almoxarifado",
-    "79 Depósito de material para pintura",
-    "83 Coordenação ADM e Contábeis",
-    "84 Deposito DTI",
-    "85 Coordenação de Direito",
-    "88 CPG",
-    "92 Cômodo da Limpeza - Prédio II",
-    "95 Quadro Geral de Força"
-  ];
+// ✅ Transformar em objetos estruturados
+const structured = entries.map(e => {
+  const m = e.match(/^(\d{1,3})\s*[–—-]?\s*(.*)$/);
+  if (m) return { num: m[1], text: m[2] || '', raw: e };
+  return { num: '', text: e, raw: e };
+});
 
-  const structured = entries.map(e => {
-    const m = e.match(/^(\d{1,3})\s*[–—-]?\s*(.*)$/);
-    if (m) return { num: m[1], text: m[2] || '', raw: e };
-    return { num: '', text: e, raw: e };
-  });
+// ✅ Função de renderização
+function render(list) {
+  const ul = document.getElementById('results');
+  ul.innerHTML = '';
 
-  function render(list) {
-    const ul = document.getElementById('results');
-    const nores = document.getElementById('nores');
-    ul.innerHTML = '';
+  const nores = document.getElementById('nores');
+
+  if (list.length === 0) {
+    nores.style.display = 'block';
+    return;
+  } else {
     nores.style.display = 'none';
+  }
 
-    let currentSection = '';
-    let inPredioII = false;
+  for (const it of list) {
+    const li = document.createElement('li');
+    li.className = 'item';
 
-    for (const it of list) {
-      if (it.raw.startsWith('[') && it.raw.endsWith(']')) {
-        currentSection = it.raw.slice(1, -1);
-        inPredioII = (currentSection === "CHAVES PRÉDIO II");
+    // Títulos [TEXTO]
+    if (it.raw.startsWith('[') && it.raw.endsWith(']')) {
+      const title = it.raw.slice(1, -1);
+      li.innerHTML = `
+        <h2 style="
+          margin:18px 0 8px;
+          font-size:18px;
+          color:#333;
+          display:flex;
+          align-items:center;
+          gap:8px;
+        ">
+          🔹 ${title}
+        </h2>
+      `;
+      ul.appendChild(li);
+      continue;
+    }
 
-        const li = document.createElement('li');
-        li.className = 'item';
-        li.innerHTML = `<span class="badge">🔹 ${currentSection}</span>`;
-        ul.appendChild(li);
-        continue;
-      }
+    // Itens normais
+    const num = it.num ? `<strong>${it.num}</strong> — ` : '';
+    li.innerHTML = `${num}<span>${it.text || it.raw}</span>`;
+    ul.appendChild(li);
+  }
+}
 
-      const li = document
+// ✅ Render inicial
+render(structured);
+
+// ✅ Busca
+const input = document.getElementById('search');
+input.addEventListener('input', () => {
+  const q = input.value.trim().toLowerCase();
+  if (!q) {
+    render(structured);
+    return;
+  }
+
+  const filtered = structured.filter(it =>
+    (it.num && it.num.includes(q)) ||
+    (it.text && it.text.toLowerCase().includes(q)) ||
+    it.raw.toLowerCase().includes(q)
+  );
+
+  render(filtered);
+});
+</script>
+</body>
+</html>
