@@ -32,9 +32,8 @@
 </div>
 
 <script>
-// Entries loaded from PDF
+// ✅ ENTRIES — sem duplicação
 const entries = [
- const entries = [
   "[LABORATÓRIOS]",
   "46 Laboratório Dietética / Técnica de Alimentos",
   "47 Laboratório Fisiologia e Avaliação Nutricional",
@@ -230,15 +229,14 @@ const entries = [
   "95 Quadro Geral de Força"
 ];
 
-// Parse into structured objects (number + text)
+// ✅ Parse
 const structured = entries.map(e => {
-  // attempt to split "N — Description"
   const m = e.match(/^(\d{1,3})\s*[–—-]?\s*(.*)$/);
-  if(m) return {num: m[1], text: m[2] || '' , raw: e};
-  return {num:'', text: e, raw: e};
+  if (m) return { num: m[1], text: m[2] || '', raw: e };
+  return { num: '', text: e, raw: e };
 });
 
-// Render function
+// ✅ Render com ícone
 function render(list) {
   const ul = document.getElementById('results');
   ul.innerHTML = '';
@@ -254,9 +252,9 @@ function render(list) {
     const li = document.createElement('li');
     li.className = 'item';
 
-    // Detecta títulos do tipo "[TEXTO]"
+    // Títulos [TEXTO]
     if (it.raw.startsWith('[') && it.raw.endsWith(']')) {
-      const title = it.raw.slice(1, -1); // remove [ e ]
+      const title = it.raw.slice(1, -1);
       li.innerHTML = `
         <h2 style="
           margin:18px 0 8px;
@@ -273,56 +271,31 @@ function render(list) {
       continue;
     }
 
-    // Render normal das chaves
+    // Itens normais
     const num = it.num ? `<strong>${it.num}</strong> — ` : '';
     li.innerHTML = `${num}<span>${it.text || it.raw}</span>`;
     ul.appendChild(li);
   }
 }
 
+// ✅ Render inicial
+render(structured);
 
-// Initial render (all)
-function render(list) {
-  const ul = document.getElementById('results');
-  ul.innerHTML = '';
+// ✅ Busca
+const input = document.getElementById('search');
+input.addEventListener('input', () => {
+  const q = input.value.trim().toLowerCase();
+  if (!q) return render(structured);
 
-  if (list.length === 0) {
-    document.getElementById('nores').style.display = 'block';
-    return;
-  } else {
-    document.getElementById('nores').style.display = 'none';
-  }
+  const filtered = structured.filter(it =>
+    (it.num && it.num.includes(q)) ||
+    (it.text && it.text.toLowerCase().includes(q)) ||
+    it.raw.toLowerCase().includes(q)
+  );
 
-  for (const it of list) {
-    const li = document.createElement('li');
-    li.className = 'item';
-
-    // Detecta títulos "## ..."
-    if (it.raw.startsWith("## ")) {
-      const title = it.raw.replace("## ", "");
-      li.innerHTML = `
-        <h2 style="
-          margin:18px 0 8px;
-          font-size:18px;
-          color:#333;
-          display:flex;
-          align-items:center;
-          gap:8px;
-        ">
-          🔹 ${title}
-        </h2>`;
-      ul.appendChild(li);
-      continue;
-    }
-
-    // Render normal das chaves
-    const num = it.num ? `<strong>${it.num}</strong> — ` : '';
-    li.innerHTML = `${num}<span>${it.text || it.raw}</span>`;
-    ul.appendChild(li);
-  }
-}
-
-
+  render(filtered);
+});
 </script>
 </body>
 </html>
+
