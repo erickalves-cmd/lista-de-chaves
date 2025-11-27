@@ -90,4 +90,84 @@
   body.dark .footer { color: var(--muted-dark); }
 
   .theme-toggle {
-    position: fixed
+    position: fixed; bottom: 24px; right: 24px;
+    width: 52px; height: 52px; border-radius: 50%;
+    backdrop-filter: blur(10px); background: rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+    transition: all 0.3s ease; z-index: 20;
+  }
+  body.dark .theme-toggle { background: rgba(0,0,0,0.35); border-color: rgba(255,255,255,0.2); }
+  .theme-toggle:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(0,0,0,0.22); }
+
+  .back-top {
+    position: fixed; bottom: 90px; right: 24px;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: #4a6cff; color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0; pointer-events: none; z-index: 19;
+  }
+  .back-top.visible { opacity: 1; pointer-events: auto; }
+  .back-top:hover { transform: translateY(-2px); }
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>Lista de Chaves</h1>
+  <p class="lead">Use a busca para filtrar por número ou descrição.</p>
+
+  <input id="search" class="search" placeholder="🔎 Buscar por número ou descrição..." autofocus>
+
+  <ul id="results" class="list" aria-live="polite"></ul>
+  <div id="nores" class="nores" style="display:none">Nenhum resultado encontrado</div>
+
+  <div class="footer">Arquivo: <strong>index.html</strong></div>
+</div>
+
+<div class="theme-toggle" id="themeToggle">🌙</div>
+<div class="back-top" id="backTop">↑</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const entries = [
+    "[LABORATÓRIOS]",
+    "46 Laboratório Dietética / Técnica de Alimentos",
+    "47 Laboratório Fisiologia e Avaliação Nutricional",
+    "50 Laboratório de Biologia Celular e Embriologia",
+    "51 Complexo de Anatomia",
+    "52 Laboratório de Medicina Veterinária",
+    "[CHAVES PRÉDIO II]",
+    "1 Sala de aula nº 01",
+    "2 Sala de aula nº 02",
+    "14 Sala de aula nº 14",
+    "95 Quadro Geral de Força"
+  ];
+
+  const structured = entries.map(e => {
+    const m = e.match(/^(\d{1,3})\s*[–—-]?\s*(.*)$/);
+    if (m) return { num: m[1], text: m[2] || '', raw: e };
+    return { num: '', text: e, raw: e };
+  });
+
+  function render(list) {
+    const ul = document.getElementById('results');
+    const nores = document.getElementById('nores');
+    ul.innerHTML = '';
+    nores.style.display = 'none';
+
+    let currentSection = '';
+    let inP2 = false;
+
+    for (const it of list) {
+      const li = document.createElement('li');
+      li.className = 'item';
+
+      if (it.raw.startsWith('[') && it.raw.endsWith(']')) {
+        currentSection = it.raw.slice(1, -1);
+        inP2 = (currentSection === "CHAVES
